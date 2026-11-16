@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gana con Bendición | Juega y sé el protagonista</title>
+    <!-- Conexión con tu archivo de estilos personalizados -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            dark: '#0f172a',
+                            blue: '#1e3a8a',
+                            accent: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Topbar & Live Ticker -->
+    <div class="bg-amber-500 text-slate-950 text-xs font-bold py-2 overflow-hidden whitespace-nowrap shadow-inner">
+        <div class="inline-block animate-marquee px-4" id="live-ticker">
+            <span>🔥 ¡Bienvenidos a Gana con Bendición! • Asegura tus números al azar del 0000 al 9999 • Sorteo oficial verificado • </span>
+        </div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img src="logo rifas.jpeg" alt="Gana con Bendición" class="h-14 w-14 rounded-full object-cover border-2 border-amber-400 shadow-lg shadow-amber-500/20">
+                <div>
+                    <span class="text-xl font-black tracking-wider text-white block uppercase">GANA CON BENDICIÓN</span>
+                    <span class="text-xs text-amber-400 font-semibold tracking-widest uppercase">Juega y sé el protagonista</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold">
+                <a href="#inicio" class="hover:text-amber-400 transition">Inicio</a>
+                <a href="#verificador" class="hover:text-amber-400 transition">Ver Mis Tickets</a>
+                <a href="#detalles" class="hover:text-amber-400 transition">Sobre Nosotros</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="#verificador" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-xl font-bold text-sm shadow-lg shadow-amber-500/20 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Ver Mis Tickets</span>
+                </a>
+                <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-xl border border-slate-700 transition" title="Panel de Administrador">
+                    <i class="fa-solid fa-lock text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full" id="inicio">
+        
+        <!-- Hero Section / Active Raffle -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Column: Flyer & Details -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-xs font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow">
+                        Sorteo Activo
+                    </div>
+                    
+                    <!-- Banner de la rifa (3000 lechugas) -->
+                    <div class="rounded-2xl overflow-hidden mb-6 border border-slate-800 bg-slate-950 flex justify-center p-4">
+                        <img src="3000 lechugas.jpeg" alt="Premio Gana con Bendición" class="max-h-96 w-auto object-contain rounded-xl shadow-xl">
+                    </div>
+
+                    <h1 class="text-2xl sm:text-3xl font-black text-white mb-3">
+                        3.000 BENDICIONES EN LA CUENTA
+                    </h1>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        ¡Participa en nuestro gran sorteo oficial! Adquiere tus boletos numerados al azar del <span class="text-amber-400 font-bold">0000 al 9999</span>. ¡No te quedes sin tu oportunidad de ser el próximo ganador!
+                    </p>
+
+                    <!-- Progress Bar -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6">
+                        <div class="flex justify-between text-sm font-bold mb-2">
+                            <span class="text-slate-400">Progreso de Ventas</span>
+                            <span id="progress-percentage" class="text-amber-400 font-black">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                            <div id="progress-bar-fill" class="bg-gradient-to-r from-amber-600 to-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                            <span class="text-xs text-slate-500 block uppercase font-bold">Precio por Ticket</span>
+                            <span class="text-xl font-black text-amber-400">570 Bs</span>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                            <span class="text-xs text-slate-500 block uppercase font-bold">Modalidad</span>
+                            <span class="text-sm font-black text-white mt-1 block">4 Dígitos (0000 - 9999)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Purchase Box -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl sticky top-28">
+                    <h2 class="text-xl font-black text-white mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping text-amber-400"></i>
+                        <span>Adquiere tus Tickets</span>
+                    </h2>
+
+                    <form id="purchase-form" onsubmit="handlePurchase(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Cantidad de Tickets</label>
+                            <div class="flex items-center space-x-2">
+                                <button type="button" onclick="adjustQuantity(-1)" class="bg-slate-800 hover:bg-slate-700 px-4 py-3 rounded-xl font-bold text-white border border-slate-700">-</button>
+                                <input type="number" id="ticket-qty" value="1" min="1" max="50" oninput="calculateTotal()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-white font-bold focus:outline-none focus:border-amber-500">
+                                <button type="button" onclick="adjustQuantity(1)" class="bg-slate-800 hover:bg-slate-700 px-4 py-3 rounded-xl font-bold text-white border border-slate-700">+</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre y Apellido</label>
+                                <input type="text" id="buyer-name" required placeholder="Ej. Juan Pérez" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Cédula</label>
+                                <input type="text" id="buyer-ci" required placeholder="Ej. 27434216" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Teléfono</label>
+                            <input type="tel" id="buyer-phone" required placeholder="Ej. 04125974816" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+
+                        <!-- Payment Info Box (Only Bs / Pago Movil) -->
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                            <span class="text-xs font-black uppercase text-amber-400 block">Datos de Pago Móvil</span>
+                            <div class="text-xs text-slate-300 space-y-1 font-mono">
+                                <p><strong>Banco:</strong> Mercantil (0105)</p>
+                                <p><strong>Cédula:</strong> 27.434.216</p>
+                                <p><strong>Teléfono:</strong> 0412-5974816</p>
+                            </div>
+                            <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-sm font-bold">
+                                <span class="text-slate-400">Total a Pagar:</span>
+                                <span id="total-price" class="text-amber-400 text-lg font-black">570 Bs</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nro. de Referencia (Últimos 6 dígitos)</label>
+                            <input type="text" id="payment-ref" required placeholder="Ej. 123456" maxlength="10" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-amber-500">
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-4 rounded-2xl shadow-lg shadow-amber-500/20 transition uppercase tracking-wider">
+                            Registrar Mi Compra
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verifier Section -->
+        <section id="verificador" class="mt-16 bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+            <div class="max-w-2xl mx-auto text-center space-y-4">
+                <h2 class="text-2xl font-black text-white">Verifica Tus Tickets</h2>
+                <p class="text-slate-400 text-sm">Ingresa tu número de cédula o teléfono para consultar los boletos asignados y su estado de aprobación.</p>
+                
+                <div class="flex gap-2">
+                    <input type="text" id="search-query" placeholder="Ingresa tu cédula o teléfono..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <button onclick="searchTickets()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3 rounded-xl transition">
+                        Buscar
+                    </button>
+                </div>
+
+                <div id="search-results" class="mt-6 text-left"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer with Certification Badges (Conalot, Sur, Super Gana) -->
+    <footer class="bg-slate-900 border-t border-slate-800 mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center space-y-6">
+            
+            <div class="flex flex-col items-center space-y-3">
+                <span class="text-xs text-slate-400 uppercase font-bold tracking-widest text-center">Instituciones Certificadoras y Verificadoras:</span>
+                <div class="flex flex-wrap items-center justify-center gap-6 bg-slate-950 px-6 py-4 rounded-2xl border border-slate-800">
+                    <img src="conalot.jpg" alt="Conalot" class="h-10 object-contain rounded">
+                    <img src="sur.png" alt="Sur" class="h-10 object-contain rounded">
+                    <img src="super gana.png" alt="Super Gana" class="h-10 object-contain rounded">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <img src="logo rifas.jpeg" alt="Gana con Bendición" class="h-10 w-10 rounded-full object-cover">
+                <span class="text-sm font-bold text-white">GANA CON BENDICIÓN</span>
+            </div>
+            <p class="text-xs text-slate-500 text-center">© 2026 Gana con Bendición • Juega y sé el protagonista. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-white">Panel de Administración</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <div id="admin-login-view" class="space-y-4 max-w-sm mx-auto py-8">
+                <p class="text-sm text-slate-400 text-center">Ingrese el PIN de seguridad (101094)</p>
+                <input type="password" id="admin-pin" placeholder="PIN de acceso" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-white font-mono focus:outline-none focus:border-amber-500">
+                <button onclick="verifyAdminPin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition">Ingresar</button>
+            </div>
+
+            <div id="admin-dashboard-view" class="hidden space-y-6">
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-xs text-slate-500 block uppercase font-bold">Vendidos</span>
+                        <span id="admin-total-sold" class="text-xl font-black text-amber-400">0</span>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-xs text-slate-500 block uppercase font-bold">Recaudado</span>
+                        <span id="admin-total-recaudado" class="text-xl font-black text-emerald-400">0 Bs</span>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-xs text-slate-500 block uppercase font-bold">Disponibles</span>
+                        <span id="admin-total-disp" class="text-xl font-black text-white">10000</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-white">Listado de Órdenes</h4>
+                    <button onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Exportar CSV</button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Comprador</th>
+                                <th class="p-3">Cédula / Tel</th>
+                                <th class="p-3">Tickets</th>
+                                <th class="p-3">Ref. Pago</th>
+                                <th class="p-3">Estado</th>
+                                <th class="p-3">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-table" class="divide-y divide-slate-800">
+                            <!-- Orders loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Modular v10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForCanvasApp123456",
+            authDomain: "ganaconbendicion-app.firebaseapp.com",
+            projectId: "ganaconbendicion-app",
+            storageBucket: "ganaconbendicion-app.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:123456:web:abcdef"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db;
+        window.colRef = collection(db, "orders_ganaconbendicion");
+
+        window.loadAppData = async function() {
+            try {
+                const snapshot = await getDocs(window.colRef);
+                window.allOrders = [];
+                snapshot.forEach(docSnap => {
+                    window.allOrders.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                updateUIStats();
+            } catch (e) {
+                console.log("Modo local offline activo:", e);
+                window.allOrders = JSON.parse(localStorage.getItem('local_orders_gcb') || '[]');
+                updateUIStats();
+            }
+        };
+
+        loadAppData();
+    </script>
+
+    <!-- App Logic Script -->
+    <script>
+        const TICKET_PRICE = 570;
+        window.allOrders = window.allOrders || [];
+
+        function adjustQuantity(change) {
+            const qtyInput = document.getElementById('ticket-qty');
+            let val = parseInt(qtyInput.value) + change;
+            if (val < 1) val = 1;
+            if (val > 50) val = 50;
+            qtyInput.value = val;
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const qty = parseInt(document.getElementById('ticket-qty').value) || 1;
+            const total = qty * TICKET_PRICE;
+            document.getElementById('total-price').innerText = total + ' Bs';
+        }
+
+        function updateUIStats() {
+            let totalSoldTickets = 0;
+            let totalRecaudado = 0;
+
+            window.allOrders.forEach(order => {
+                if (order.status === 'Aprobado') {
+                    totalSoldTickets += order.tickets.length;
+                    totalRecaudado += order.tickets.length * TICKET_PRICE;
+                }
+            });
+
+            const percentage = ((totalSoldTickets / 10000) * 100).toFixed(1);
+            document.getElementById('progress-percentage').innerText = percentage + '%';
+            document.getElementById('progress-bar-fill').style.width = percentage + '%';
+
+            document.getElementById('admin-total-sold').innerText = totalSoldTickets;
+            document.getElementById('admin-total-recaudado').innerText = totalRecaudado + ' Bs';
+            document.getElementById('admin-total-disp').innerText = 10000 - totalSoldTickets;
+        }
+
+        function generateRandomTickets(count, existingOrders) {
+            const occupied = new Set();
+            existingOrders.forEach(o => {
+                if (o.status !== 'Rechazado') {
+                    o.tickets.forEach(t => occupied.add(t));
+                }
+            });
+
+            const assigned = [];
+            while (assigned.length < count) {
+                const randNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                if (!occupied.has(randNum) && !assigned.includes(randNum)) {
+                    assigned.push(randNum);
+                }
+            }
+            return assigned;
+        }
+
+        async function handlePurchase(e) {
+            e.preventDefault();
+            const qty = parseInt(document.getElementById('ticket-qty').value);
+            const name = document.getElementById('buyer-name').value;
+            const ci = document.getElementById('buyer-ci').value;
+            const phone = document.getElementById('buyer-phone').value;
+            const reference = document.getElementById('payment-ref').value;
+
+            const assignedTickets = generateRandomTickets(qty, window.allOrders);
+
+            const newOrder = {
+                name,
+                ci,
+                phone,
+                tickets: assignedTickets,
+                reference,
+                status: 'Pendiente',
+                date: new Date().toISOString()
+            };
+
+            try {
+                if (window.db && window.colRef) {
+                    const docRef = await window.addDoc(window.colRef, newOrder);
+                    newOrder.id = docRef.id;
+                }
+            } catch (err) {
+                console.log("Guardando en modo local:", err);
+            }
+
+            window.allOrders.push(newOrder);
+            localStorage.setItem('local_orders_gcb', JSON.stringify(window.allOrders));
+            updateUIStats();
+
+            alert(`¡Compra registrada con éxito!\nTus números asignados son: ${assignedTickets.join(', ')}\n\nSerás redirigido a WhatsApp para enviar tu comprobante.`);
+            
+            const msg = `Hola Gana con Bendición, compré ${qty} ticket(s).\nNombre: ${name}\nCédula: ${ci}\nRef. Pago Móvil: ${reference}\nMis números: ${assignedTickets.join(', ')}`;
+            window.open(`https://wa.me/584125974816?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            document.getElementById('purchase-form').reset();
+            calculateTotal();
+        }
+
+        function searchTickets() {
+            const query = document.getElementById('search-query').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('search-results');
+            if (!query) {
+                resultsDiv.innerHTML = `<p class="text-amber-500 text-sm">Por favor ingresa una cédula o teléfono válido.</p>`;
+                return;
+            }
+
+            const found = window.allOrders.filter(o => o.ci.toLowerCase().includes(query) || o.phone.toLowerCase().includes(query) || o.tickets.includes(query));
+
+            if (found.length === 0) {
+                resultsDiv.innerHTML = `<p class="text-slate-400 text-sm">No se encontraron tickets registrados con esos datos.</p>`;
+                return;
+            }
+
+            let html = '<div class="space-y-3">';
+            found.forEach(o => {
+                const badgeColor = o.status === 'Aprobado' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : (o.status === 'Rechazado' ? 'bg-rose-500/20 text-rose-400 border-rose-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30');
+                html += `
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <p class="font-bold text-white">${o.name} <span class="text-xs text-slate-400">(C.I: ${o.ci})</span></p>
+                            <p class="text-xs text-slate-400 mt-1">Tickets: <span class="text-amber-400 font-mono font-bold">${o.tickets.join(', ')}</span></p>
+                            <p class="text-xs text-slate-500">Ref: ${o.reference}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold border ${badgeColor}">${o.status}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+        }
+
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('admin-pin').value;
+            if (pin === '101094') {
+                document.getElementById('admin-login-view').classList.add('hidden');
+                document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                renderAdminOrders();
+            } else {
+                alert('PIN incorrecto');
+            }
+        }
+
+        function renderAdminOrders() {
+            const tbody = document.getElementById('admin-orders-table');
+            tbody.innerHTML = '';
+
+            window.allOrders.forEach((o, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3 font-bold text-white">${o.name}</td>
+                        <td class="p-3 text-slate-300">${o.ci}<br><span class="text-xs text-slate-500">${o.phone}</span></td>
+                        <td class="p-3 font-mono text-amber-400">${o.tickets.join(', ')}</td>
+                        <td class="p-3 text-slate-300 font-mono">${o.reference}</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold ${o.status === 'Aprobado' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${o.status}</span></td>
+                        <td class="p-3 space-x-2">
+                            <button onclick="updateOrderStatus(${index}, 'Aprobado')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded text-xs font-bold">Aprobar</button>
+                            <button onclick="updateOrderStatus(${index}, 'Rechazado')" class="bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1 rounded text-xs font-bold">Rechazar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function updateOrderStatus(index, newStatus) {
+            window.allOrders[index].status = newStatus;
+            localStorage.setItem('local_orders_gcb', JSON.stringify(window.allOrders));
+            updateUIStats();
+            renderAdminOrders();
+            alert(`Orden actualizada a: ${newStatus}`);
+        }
+
+        function exportCSV() {
+            let csv = 'Nombre,Cedula,Telefono,Tickets,Referencia,Estado\n';
+            window.allOrders.forEach(o => {
+                csv += `"${o.name}","${o.ci}","${o.phone}","${o.tickets.join(' ')}","${o.reference}","${o.status}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'ventas_ganaconbendicion.csv');
+            a.click();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+/* ================================================================= *
+ * GANA CON BENDICIÓN - ESTILOS OFICIALES (style.css)                *
+ * ================================================================= */
+
+:root {
+    --brand-gold: #D4AF37;
+    --brand-dark: #0f172a;
+    --brand-blue: #1e3a8a;
+    --brand-accent: #f59e0b;
+}
+
+/* Estilos generales y fondo base */
+body {
+    background-color: #020617;
+    color: #f8fafc;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Animación de la barra superior (Ticker de compras en vivo) */
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+    display: inline-block;
+    animation: marquee 25s linear infinite;
+}
+
+/* Efectos de cristal y bordes personalizados */
+.glass-card {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Transiciones suaves para botones y campos */
+button, input, a {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Estilización de barras de desplazamiento en paneles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
